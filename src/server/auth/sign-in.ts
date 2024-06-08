@@ -36,9 +36,7 @@ export async function signInAction(_: unknown, formData: FormData) {
 
   if (!user) {
     return {
-      fieldError: {
-        nid: "Invalid credentials",
-      },
+      formError: "Invalid credentials",
     };
   }
 
@@ -49,7 +47,7 @@ export async function signInAction(_: unknown, formData: FormData) {
 
   if (!validPassword) {
     return {
-      error: "Invalid credentials",
+      formError: "Invalid credentials",
     };
   }
 
