@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -8,6 +10,14 @@ import { signInAction } from "~/server/auth/sign-in";
 
 export default function SignIn() {
   const [state, formAction] = useFormState(signInAction, null);
+
+  useEffect(() => {
+    if (state?.formError) {
+      toast.error(state.formError, {
+        richColors: true,
+      });
+    }
+  }, [state]);
 
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -34,7 +44,7 @@ export default function SignIn() {
               name="password"
               type="password"
               id="password"
-              placeholder="password"
+              placeholder="Password"
             />
             {state?.fieldError?.password && (
               <p className="text-sm text-red-500">
@@ -42,9 +52,6 @@ export default function SignIn() {
               </p>
             )}
           </div>
-          {state?.formError && (
-            <p className="text-sm text-red-500">{state.formError}</p>
-          )}
         </div>
         <Button className="w-full" type="submit">
           Sign In
