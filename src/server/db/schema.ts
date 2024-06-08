@@ -10,19 +10,44 @@ import { index, int, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = sqliteTableCreator((name) => `office-oopsies_${name}`);
-
-export const posts = createTable(
-  "post",
-  {
-    id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-    name: text("name", { length: 256 }),
-    createdAt: int("created_at", { mode: "timestamp" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: int("updatedAt", { mode: "timestamp" }),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
+export const createTable = sqliteTableCreator(
+  (name) => `office-oopsies_${name}`,
 );
+
+export const users = createTable(
+  "user",
+  {
+    id: text("id").notNull().primaryKey(),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name").notNull(),
+    username: text("username").notNull().unique(),
+    email: text("email").notNull(),
+    hashedPassword: text("hashed_password").notNull(),
+  },
+  (table) => ({
+    username: index("username_idx").on(table.username),
+    firstName: index("first_name_idx").on(table.firstName),
+    lastName: index("last_name_idx").on(table.lastName),
+  }),
+);
+
+export const sessions = createTable("session", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  expiresAt: int("expires_at").notNull(),
+});
+
+export const oopsy = createTable("oopsy", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  createdAt: int("created_at").notNull(),
+  description: text("description").notNull(),
+  longitude: text("longitude"),
+  latitude: text("latitude"),
+  imageUrl: text("image_url"),
+  likes: int("likes").notNull().default(0),
+});
