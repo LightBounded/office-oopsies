@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { signOutAction } from "~/server/auth/sign-out";
 import { validateRequest } from "~/server/auth/validate-request";
 
 export default async function Home() {
@@ -6,6 +8,17 @@ export default async function Home() {
   if (!session) redirect("/sign-in");
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white"></main>
+    <main>
+      <form>
+        <Button
+          formAction={async () => {
+            "use server";
+            await signOutAction();
+          }}
+        >
+          Sign Out
+        </Button>
+      </form>
+    </main>
   );
 }
