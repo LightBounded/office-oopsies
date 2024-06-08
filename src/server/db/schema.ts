@@ -39,12 +39,19 @@ export const sessions = createTable("session", {
   expiresAt: int("expires_at").notNull(),
 });
 
-export const oopsy = createTable("oopsy", {
-  id: text("id").notNull().primaryKey(),
+export const oopsies = createTable("oopsy", {
+  id: int("id").notNull().primaryKey({
+    autoIncrement: true,
+  }),
   userId: text("user_id")
     .notNull()
     .references(() => users.id),
-  createdAt: int("created_at").notNull(),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => users.id),
+  timestamp: text("timestamp")
+    .notNull()
+    .default(sql`(current_timestamp)`),
   description: text("description").notNull(),
   longitude: text("longitude"),
   latitude: text("latitude"),
