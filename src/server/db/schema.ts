@@ -31,6 +31,8 @@ export const users = createTable(
   }),
 );
 
+export type SelectUser = typeof users.$inferSelect;
+
 export const sessions = createTable("session", {
   id: text("id").notNull().primaryKey(),
   userId: text("user_id")

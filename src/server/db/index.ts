@@ -1,5 +1,6 @@
 import { createClient, type Client } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
+import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle";
 
 import { env } from "~/env";
 import * as schema from "./schema";
@@ -17,3 +18,9 @@ export const client =
 if (env.NODE_ENV !== "production") globalForDb.client = client;
 
 export const db = drizzle(client, { schema });
+
+export const adapter = new DrizzleSQLiteAdapter(
+  db,
+  schema.sessions,
+  schema.users,
+);
