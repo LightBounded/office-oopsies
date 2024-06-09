@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormState } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -10,8 +11,8 @@ export default function SignUp() {
   const [state, formAction] = useFormState(signUpAction, null);
 
   return (
-    <main className="flex min-h-screen items-center justify-center ">
-      <form action={formAction} className="w-full max-w-96" noValidate>
+    <main className="flex min-h-screen items-center justify-center">
+      <form action={formAction} className="w-full max-w-96 px-4" noValidate>
         <h1 className="mb-4 text-center text-2xl font-semibold">
           Office Oopsies
         </h1>
@@ -82,9 +83,14 @@ export default function SignUp() {
             )}
           </div>
         </div>
-        <Button className="w-full" type="submit">
+        <Button className="mb-2 w-full" type="submit">
           Sign In
         </Button>
+        <div className="text-center">
+          <Link className="underline underline-offset-4" href="/sign-in">
+            Have an account? Sign in
+          </Link>
+        </div>
       </form>
     </main>
   );
