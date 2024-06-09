@@ -8,7 +8,7 @@ import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Office Oopsies!",
-  description: "A collection of office mishaps and blunders!",
+  description: "A simple tracker for office mishaps and blunders!",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable}`}
+      className={`${GeistSans.variable} antialiased`}
       suppressHydrationWarning
     >
       <body>
