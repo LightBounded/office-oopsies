@@ -8,7 +8,7 @@ export default async function Home() {
   if (!session) redirect("/sign-in");
 
   return (
-    <main>
+    <main className="px-8">
       <form>
         <Button
           formAction={async () => {
