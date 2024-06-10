@@ -17,7 +17,7 @@ export default function MainLayout({
 
 function Navbar() {
   return (
-    <nav className="sticky top-0 mb-4 flex justify-between border-b border-border/40 px-8 gap-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 mb-4 flex justify-between gap-4 border-b border-border/40 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link href="/" className="hidden items-center text-xl font-bold sm:flex">
         Office Oopsies
       </Link>
