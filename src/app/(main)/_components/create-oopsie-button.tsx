@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,7 +16,7 @@ export function CreateOopsieButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Create</Button>
+        <Button className="mb-4">Create</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
