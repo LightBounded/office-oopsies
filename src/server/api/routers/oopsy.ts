@@ -37,12 +37,21 @@ export const oopsieRouter = createTRPCRouter({
       // Check if user has already liked the oopsie
       const hasLiked = await ctx.db.query.oopsieLikes.findFirst({
         where: and(
-          eq(oopsies.id, input),
-          eq(oopsies.userId, ctx.session.userId),
+          eq(oopsieLikes.oopsieId, input),
+          eq(oopsieLikes.userId, ctx.session.userId),
         ),
       });
 
       if (hasLiked) {
+        await ctx.db
+          .delete(oopsieLikes)
+          .where(
+            and(
+              eq(oopsieLikes.oopsieId, input),
+              eq(oopsieLikes.userId, ctx.session.userId),
+            ),
+          );
+
         await ctx.db
           .update(oopsies)
           .set({
