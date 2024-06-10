@@ -12,7 +12,7 @@ export const uncachedValidateRequest = async (): Promise<
     return { user: null, session: null };
   }
   const result = await lucia.validateSession(sessionId);
-  
+
   // Next.js throws when you attempt to set cookie when rendering page
   try {
     if (result.session?.fresh) {
@@ -22,7 +22,8 @@ export const uncachedValidateRequest = async (): Promise<
         sessionCookie.value,
         sessionCookie.attributes,
       );
-    } else {
+    }
+    if (!result.session) {
       const sessionCookie = lucia.createBlankSessionCookie();
       cookies().set(
         sessionCookie.name,
