@@ -33,12 +33,15 @@ export function CreateOopsieForm() {
     },
   });
 
+  const utils = api.useUtils();
+
   const createOopsie = api.oopsie.create.useMutation({
     onSuccess: () => {
       toast.success("Oopsie created!");
+      void utils.oopsie.getLatest.invalidate();
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: () => {
+      toast.error("Failed to create oopsie");
     },
     onSettled: () => {
       form.reset();
