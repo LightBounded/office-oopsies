@@ -1,10 +1,12 @@
+import { and, eq, sql } from "drizzle-orm";
+import { z } from "zod";
 import { oopsieSchema } from "~/lib/validators";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { oopsies } from "~/server/db/schema";
+import { oopsieLikes, oopsies } from "~/server/db/schema";
 
 export const oopsieRouter = createTRPCRouter({
   create: protectedProcedure
@@ -20,8 +22,45 @@ export const oopsieRouter = createTRPCRouter({
       });
     }),
   getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.oopsies.findFirst({
+    return ctx.db.query.oopsies.findMany({
       orderBy: (oopsies, { desc }) => [desc(oopsies.timestamp)],
+      with: {
+        user: true,
+        author: true,
+      },
     });
   }),
+
+  like: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      // Check if user has already liked the oopsie
+      const hasLiked = await ctx.db.query.oopsieLikes.findFirst({
+        where: and(
+          eq(oopsies.id, input),
+          eq(oopsies.userId, ctx.session.userId),
+        ),
+      });
+
+      if (hasLiked) {
+        await ctx.db
+          .update(oopsies)
+          .set({
+            likes: sql`${oopsies.likes} - 1`,
+          })
+          .where(eq(oopsies.id, input));
+      } else {
+        await ctx.db.insert(oopsieLikes).values({
+          userId: ctx.session.userId,
+          oopsieId: input,
+        });
+
+        await ctx.db
+          .update(oopsies)
+          .set({
+            likes: sql`${oopsies.likes} + 1`,
+          })
+          .where(eq(oopsies.id, input));
+      }
+    }),
 });
