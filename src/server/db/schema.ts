@@ -1,8 +1,14 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
-import { index, int, sqliteTableCreator, text } from "drizzle-orm/sqlite-core";
+import { relations, sql } from "drizzle-orm";
+import {
+  index,
+  int,
+  sqliteTableCreator,
+  text,
+  unique,
+} from "drizzle-orm/sqlite-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -23,6 +29,9 @@ export const users = createTable(
     username: text("username").notNull().unique(),
     email: text("email").notNull(),
     hashedPassword: text("hashed_password").notNull(),
+    createdAt: text("created_at")
+      .notNull()
+      .default(sql`(current_timestamp)`),
   },
   (table) => ({
     username: index("username_idx").on(table.username),
@@ -59,4 +68,51 @@ export const oopsies = createTable("oopsie", {
   latitude: text("latitude"),
   imageUrl: text("image_url"),
   likes: int("likes").notNull().default(0),
+});
+
+export const oopsiesRelations = relations(oopsies, ({ one }) => ({
+  user: one(users, {
+    fields: [oopsies.userId],
+    references: [users.id],
+    relationName: "user",
+  }),
+  author: one(users, {
+    fields: [oopsies.authorId],
+    references: [users.id],
+    relationName: "author",
+  }),
+}));
+
+export const oopsieLikes = createTable(
+  "oopsie_like",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id),
+    oopsieId: int("oopsie_id")
+      .notNull()
+      .references(() => oopsies.id),
+    createdAt: text("timestamp")
+      .notNull()
+      .default(sql`(current_timestamp)`),
+  },
+  (table) => ({
+    unique: unique().on(table.userId, table.oopsieId),
+  }),
+);
+
+export const comments = createTable("comment", {
+  id: int("id").notNull().primaryKey({
+    autoIncrement: true,
+  }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  oopsieId: int("oopsie_id")
+    .notNull()
+    .references(() => oopsies.id),
+  text: text("text").notNull(),
+  timestamp: text("timestamp")
+    .notNull()
+    .default(sql`(current_timestamp)`),
 });
