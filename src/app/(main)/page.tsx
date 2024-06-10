@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import { Button } from "~/components/ui/button";
-import { signOutAction } from "~/server/auth/sign-out";
 import { validateRequest } from "~/server/auth/validate-request";
+import { CreateOopsieButton } from "./_components/create-oopsie-button";
 
 export default async function Home() {
   const { session } = await validateRequest();
@@ -9,16 +8,7 @@ export default async function Home() {
 
   return (
     <main className="px-8">
-      <form>
-        <Button
-          formAction={async () => {
-            "use server";
-            await signOutAction();
-          }}
-        >
-          Sign Out
-        </Button>
-      </form>
+      <CreateOopsieButton />
     </main>
   );
 }
