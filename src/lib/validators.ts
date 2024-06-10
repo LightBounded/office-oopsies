@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const oopsieSchema = z.object({
   description: z.string().min(1, "Description is required"),
-  userId: z.string(),
+  userId: z.string().min(1, "User is required"),
   latitude: z.string(),
   longitude: z.string(),
   imageUrl: z.string(),
