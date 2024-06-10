@@ -86,6 +86,9 @@ export const oopsiesRelations = relations(oopsies, ({ one }) => ({
 export const oopsieLikes = createTable(
   "oopsie_like",
   {
+    id: int("id").notNull().primaryKey({
+      autoIncrement: true,
+    }),
     userId: text("user_id")
       .notNull()
       .references(() => users.id),
