@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { oopsieSchema } from "~/lib/validators";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -6,17 +6,9 @@ import {
 } from "~/server/api/trpc";
 import { oopsies } from "~/server/db/schema";
 
-export const postRouter = createTRPCRouter({
+export const oopsieRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(
-      z.object({
-        description: z.string().min(1),
-        userId: z.string(),
-        latitude: z.string(),
-        longitude: z.string(),
-        imageUrl: z.string(),
-      }),
-    )
+    .input(oopsieSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(oopsies).values({
         authorId: input.userId,
