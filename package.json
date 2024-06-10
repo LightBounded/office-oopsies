@@ -12,7 +12,10 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "ds": "npx shadcn-ui@latest add --"
+    "ds": "npx shadcn-ui@latest add --",
+    "format": "prettier --check . --ignore-path .gitignore",
+    "format:fix": " prettier --write . --ignore-path .gitignore",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
