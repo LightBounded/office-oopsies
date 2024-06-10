@@ -26,7 +26,7 @@ export default function SignIn() {
         <h1 className="mb-4 text-center text-2xl font-semibold">
           Office Oopsies
         </h1>
-        <div className="mb-4  space-y-2">
+        <div className="mb-4 space-y-2">
           <div className="space-y-1">
             <Label htmlFor="text">Email or username</Label>
             <Input
