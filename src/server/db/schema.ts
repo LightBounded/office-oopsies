@@ -41,7 +41,7 @@ export const sessions = createTable("session", {
   expiresAt: int("expires_at").notNull(),
 });
 
-export const oopsies = createTable("oopsy", {
+export const oopsies = createTable("oopsie", {
   id: int("id").notNull().primaryKey({
     autoIncrement: true,
   }),
