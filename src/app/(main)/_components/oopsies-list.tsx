@@ -2,21 +2,69 @@
 
 import { MessageCircleIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { type RouterOutputs, api } from "~/trpc/react";
 
 export function OopsiesList() {
-  const { data: oopsies, isError, isPending } = api.oopsie.getLatest.useQuery();
+  const {
+    data: oopsies,
+    isError,
+    isPending,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetchNextPageError,
+  } = api.oopsie.getLatest.useInfiniteQuery(
+    {
+      limit: 5,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
+
+  const observerTargetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage) {
+          void fetchNextPage();
+        }
+      },
+      { threshold: 0 },
+    );
+
+    if (observerTargetRef.current) {
+      observer.observe(observerTargetRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasNextPage, fetchNextPage]);
 
   if (isPending) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
 
   return (
     <div className="space-y-4">
-      {oopsies.map((oopsie) => (
-        <OopsieCard key={oopsie.id} oopsie={oopsie} />
+      {oopsies.pages.map((page, i) => (
+        <div key={i} className="space-y-4">
+          {page.oopsies.map((oopsie) => (
+            <OopsieCard key={oopsie.id} oopsie={oopsie} />
+          ))}
+        </div>
       ))}
+      {isFetchingNextPage && <div className="text-center">Loading more...</div>}
+      {!hasNextPage && <div className="text-center">No more oopsies :(</div>}
+      {isFetchNextPageError && (
+        <div className="text-center">Failed to load more oopsies</div>
+      )}
+
+      <div ref={observerTargetRef} className="pb-0.5"></div>
     </div>
   );
 }
@@ -24,7 +72,7 @@ export function OopsiesList() {
 function OopsieCard({
   oopsie,
 }: {
-  oopsie: RouterOutputs["oopsie"]["getLatest"][number];
+  oopsie: RouterOutputs["oopsie"]["getLatest"]["oopsies"][0];
 }) {
   const utils = api.useUtils();
   const likeOopsie = api.oopsie.like.useMutation({
