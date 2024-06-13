@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircleIcon, ThumbsUpIcon } from "lucide-react";
+import { MapPin, MessageCircleIcon, ThumbsUpIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
