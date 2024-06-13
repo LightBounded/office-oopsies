@@ -21,16 +21,34 @@ export const oopsieRouter = createTRPCRouter({
         imageUrl: input.imageUrl,
       });
     }),
-  getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.oopsies.findMany({
-      orderBy: (oopsies, { desc }) => [desc(oopsies.timestamp)],
-      with: {
-        user: true,
-        author: true,
-      },
-    });
-  }),
+  getLatest: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().nullish(),
+        limit: z.number().min(1).max(50).default(5),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const oopsies = await ctx.db.query.oopsies.findMany({
+        orderBy: (oopsies, { desc }) => [desc(oopsies.timestamp)],
+        limit: input.limit,
+        offset: input.cursor ? input.cursor * input.cursor : 0,
+        with: {
+          user: true,
+          author: true,
+        },
+      });
 
+      let nextCursor: typeof input.cursor;
+      if (oopsies.length === input.limit) {
+        nextCursor = input.cursor ? input.cursor + 1 : 1;
+      }
+
+      return {
+        oopsies,
+        nextCursor,
+      };
+    }),
   like: protectedProcedure
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
