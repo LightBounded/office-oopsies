@@ -59,7 +59,7 @@ export function OopsiesList() {
         </div>
       ))}
       {isFetchingNextPage && <div className="text-center">Loading more...</div>}
-      {!hasNextPage && <div className="text-center">No more oopsies :(</div>}
+      {!hasNextPage && <div className="text-center">That&apos;s all! :D</div>}
       {isFetchNextPageError && (
         <div className="text-center">Failed to load more oopsies</div>
       )}
