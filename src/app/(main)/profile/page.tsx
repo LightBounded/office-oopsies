@@ -1,3 +1,3 @@
 export default function ProfilePage() {
-  return <></>;
+  return <main className="px-6">Coming soon!</main>;
 }

@@ -1,3 +1,3 @@
 export default function LeaderboardPage() {
-  return <></>;
+  return <main className="px-6">Coming soon!</main>;
 }
