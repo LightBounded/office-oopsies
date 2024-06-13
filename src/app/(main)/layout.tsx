@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { signOutAction } from "~/server/auth/sign-out";
 
 export default function MainLayout({
@@ -17,11 +25,12 @@ export default function MainLayout({
 
 function Navbar() {
   return (
-    <nav className="sticky top-0 mb-4 flex justify-between gap-4 border-b border-border/40 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-10 mb-4 flex h-16 justify-between gap-4 border-b border-border/40 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link href="/" className="hidden items-center text-xl font-bold sm:flex">
         Office Oopsies
       </Link>
-      <ul className="flex h-16 items-center gap-4">
+      <MobileMenu />
+      <ul className="hidden items-center gap-4 sm:flex">
         <li>
           <Link href="/">Home</Link>
         </li>
@@ -47,5 +56,30 @@ function Navbar() {
         </li>
       </ul>
     </nav>
+  );
+}
+
+function MobileMenu() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="my-auto sm:hidden" variant="outline">
+          Menu
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="sm:hidden" align="start">
+        <DropdownMenuLabel>Where to?</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/">Home</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/leaderboard">Leaderboard</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile">Profile</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
