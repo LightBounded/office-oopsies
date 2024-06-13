@@ -20,18 +20,28 @@ import {
 import { api } from "~/trpc/react";
 import { Input } from "~/components/ui/input";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export function CreateOopsieForm() {
   const form = useForm<OopsieForm>({
     resolver: zodResolver(oopsieFormSchema),
     defaultValues: {
       description: "",
-      imageUrl: "",
-      latitude: "",
-      longitude: "",
       userId: "",
     },
   });
+
+  // Get longitude and latitude from browser
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        form.setValue("latitude", position.coords.latitude.toString());
+        form.setValue("longitude", position.coords.longitude.toString());
+      });
+    } else {
+      toast.error("Geolocation is not supported by this browser.");
+    }
+  }, [form]);
 
   const utils = api.useUtils();
 
