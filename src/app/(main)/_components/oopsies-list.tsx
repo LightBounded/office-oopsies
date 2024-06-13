@@ -87,12 +87,12 @@ function OopsieCard({
 
   return (
     <div className="relative flex min-h-36 flex-col rounded-md border p-6 sm:flex-row sm:gap-6">
-      <div className="mb-1">
+      <div className="mb-1 flex flex-col">
         <div className="text-xl font-bold">{oopsie.user.username}</div>
         <div className="break-all">{oopsie.description}</div>
       </div>
       <div className="sm:ml-auto sm:flex sm:flex-col">
-        <div className="mb-4 text-nowrap text-sm text-foreground/80">
+        <div className="mb-4 text-nowrap text-sm text-foreground/80 sm:text-right">
           Reported by{" "}
           <Link
             className="underline underline-offset-4"
@@ -101,7 +101,7 @@ function OopsieCard({
             {oopsie.author.username}
           </Link>
         </div>
-        <div className="mt-auto space-x-2 text-nowrap">
+        <div className="mt-auto space-x-2 text-nowrap sm:text-right">
           <Button
             onClick={() => likeOopsie.mutate(oopsie.id)}
             size="sm"
@@ -110,9 +110,8 @@ function OopsieCard({
             <ThumbsUpIcon className="mr-2 h-4 w-4" />
             {oopsie.likes}
           </Button>
-          <Button size="sm" className="h-8">
-            <MessageCircleIcon className="mr-2 h-4 w-4" />
-            Comment
+          <Button size="icon" className="h-8 w-8">
+            <MessageCircleIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
