@@ -113,6 +113,16 @@ function OopsieCard({
           <Button size="icon" className="h-8 w-8">
             <MessageCircleIcon className="h-4 w-4" />
           </Button>
+          {oopsie.latitude && oopsie.longitude && (
+            <Button size="icon" asChild className="h-8 w-8">
+              <a
+                target="_blank"
+                href={`https://www.google.com/maps?q=${oopsie.latitude},${oopsie.longitude}`}
+              >
+                <MapPin className="h-4 w-4" />
+              </a>
+            </Button>
+          )}
         </div>
       </div>
     </div>
