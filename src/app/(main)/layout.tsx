@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { signOutAction } from "~/server/auth/sign-out";
+import { validateRequest } from "~/server/auth/validate-request";
 
 export default function MainLayout({
   children,
@@ -23,7 +24,9 @@ export default function MainLayout({
   );
 }
 
-function Navbar() {
+async function Navbar() {
+  const { session } = await validateRequest();
+
   return (
     <nav className="sticky top-0 z-10 mb-4 flex h-16 justify-between gap-4 border-b border-border/40 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link href="/" className="hidden items-center text-xl font-bold sm:flex">
@@ -41,8 +44,8 @@ function Navbar() {
           <Link href="/profile">Profile</Link>
         </li>
       </ul>
-      <ul className="flex items-center">
-        <li>
+      <div className="my-auto">
+        {session ? (
           <form>
             <Button
               formAction={async () => {
@@ -53,8 +56,12 @@ function Navbar() {
               Sign Out
             </Button>
           </form>
-        </li>
-      </ul>
+        ) : (
+          <Link href="/sign-in" passHref>
+            <Button>Sign In</Button>
+          </Link>
+        )}
+      </div>
     </nav>
   );
 }
