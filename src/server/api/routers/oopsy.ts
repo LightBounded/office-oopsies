@@ -6,19 +6,28 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { oopsieLikes, oopsies } from "~/server/db/schema";
+import { oopsieLikes, oopsies, users } from "~/server/db/schema";
 
 export const oopsieRouter = createTRPCRouter({
   create: protectedProcedure
     .input(oopsieSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(oopsies).values({
-        authorId: input.userId,
-        description: input.description,
-        userId: input.userId,
-        latitude: input.latitude,
-        longitude: input.longitude,
-        imageUrl: input.imageUrl,
+      await ctx.db.transaction(async (tx) => {
+        await tx.insert(oopsies).values({
+          authorId: input.userId,
+          description: input.description,
+          userId: input.userId,
+          latitude: input.latitude,
+          longitude: input.longitude,
+          imageUrl: input.imageUrl,
+        });
+        // Update number of oopsies on a user's profile
+        await tx
+          .update(users)
+          .set({
+            oopsiesCount: sql`${users.oopsiesCount} + 1`,
+          })
+          .where(eq(users.id, input.userId));
       });
     }),
   getLatest: publicProcedure
