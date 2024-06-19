@@ -32,6 +32,7 @@ export const users = createTable(
     createdAt: text("created_at")
       .notNull()
       .default(sql`(current_timestamp)`),
+    oopsiesCount: int("number_of_oopsies").notNull().default(0),
   },
   (table) => ({
     username: index("username_idx").on(table.username),
