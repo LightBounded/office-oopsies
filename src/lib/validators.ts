@@ -1,17 +1,17 @@
 import { z } from "zod";
 
-export const oopsieSchema = z.object({
+export const createOopsieSchema = z.object({
   description: z.string().min(1, "Description is required"),
   userId: z.string().min(1, "User is required"),
   latitude: z.string(),
   longitude: z.string(),
-  imageUrl: z.string(),
+  imageUrl: z.string().optional(),
 });
 
-export type Oopsie = z.infer<typeof oopsieSchema>;
+export type CreateOopsie = z.infer<typeof createOopsieSchema>;
 
-export const oopsieFormSchema = oopsieSchema.omit({
-  imageUrl: true,
+export const updateOopsieSchema = createOopsieSchema.partial().extend({
+  oopsieId: z.number(),
 });
 
-export type OopsieForm = z.infer<typeof oopsieSchema>;
+export type UpdateOopsie = z.infer<typeof updateOopsieSchema>;
