@@ -1,4 +1,4 @@
-import { asc } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { users } from "~/server/db/schema";
 
@@ -21,6 +21,6 @@ export const userRouter = createTRPCRouter({
       })
       .from(users)
       .limit(5)
-      .orderBy(asc(users.oopsiesCount));
+      .orderBy(desc(users.oopsiesCount));
   }),
 });
