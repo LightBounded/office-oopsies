@@ -22,6 +22,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { type RouterOutputs, api } from "~/trpc/react";
+import { UpdateOopsieButton } from "./update-oopsie-button";
 
 export function OopsiesList() {
   const {
@@ -142,6 +143,7 @@ function OopsieCard({
             </Button>
           )}
           <DeleteButton oopsieId={oopsie.id} />
+          <UpdateOopsieButton oopsie={oopsie} />
         </div>
       </div>
     </div>
