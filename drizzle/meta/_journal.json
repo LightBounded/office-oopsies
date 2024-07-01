@@ -1,0 +1,13 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1719818145227,
+      "tag": "0000_daily_george_stacy",
+      "breakpoints": true
+    }
+  ]
+}
