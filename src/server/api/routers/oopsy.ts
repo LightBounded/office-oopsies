@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { oopsieSchema } from "~/lib/validators";
@@ -28,6 +29,38 @@ export const oopsieRouter = createTRPCRouter({
             oopsiesCount: sql`${users.oopsiesCount} + 1`,
           })
           .where(eq(users.id, input.userId));
+      });
+    }),
+  delete: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        const oopsie = await tx.query.oopsies.findFirst({
+          where: eq(oopsies.id, input),
+        });
+
+        if (!oopsie) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Oopsie not found",
+          });
+        }
+
+        if (oopsie.authorId !== ctx.user.id) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You are not the author of this oopsie",
+          });
+        }
+
+        await tx.delete(oopsies).where(eq(oopsies.id, input));
+        // Update number of oopsies on a user's profile
+        await tx
+          .update(users)
+          .set({
+            oopsiesCount: sql`${users.oopsiesCount} - 1`,
+          })
+          .where(eq(users.id, oopsie.userId));
       });
     }),
   getLatest: publicProcedure

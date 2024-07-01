@@ -1,9 +1,25 @@
 "use client";
 
-import { MapPin, MessageCircleIcon, ThumbsUpIcon } from "lucide-react";
+import {
+  MapPin,
+  MessageCircleIcon,
+  ThumbsUpIcon,
+  TrashIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { type RouterOutputs, api } from "~/trpc/react";
 
@@ -125,8 +141,48 @@ function OopsieCard({
               </a>
             </Button>
           )}
+          <DeleteButton oopsieId={oopsie.id} />
         </div>
       </div>
     </div>
+  );
+}
+
+function DeleteButton({ oopsieId }: { oopsieId: number }) {
+  const utils = api.useUtils();
+  const deleteOopsie = api.oopsie.delete.useMutation({
+    async onSuccess() {
+      // Invalidate query
+      await utils.oopsie.getLatest.invalidate();
+    },
+    async onError() {
+      toast.error("Failed to delete oopsie");
+    },
+  });
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="icon" className="h-8 w-8">
+          <TrashIcon className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the
+            oopsie you reported and decrease the target user&apos;s oopsie
+            count.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => deleteOopsie.mutate(oopsieId)}>
+            Delete this oopsie
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
