@@ -8,7 +8,7 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-screen-sm px-8">
       {session && <CreateOopsieButton />}
-      <OopsiesList />
+      <OopsiesList currentUserId={session?.userId} />
     </main>
   );
 }

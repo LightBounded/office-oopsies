@@ -24,7 +24,7 @@ import { Button } from "~/components/ui/button";
 import { type RouterOutputs, api } from "~/trpc/react";
 import { UpdateOopsieButton } from "./update-oopsie-button";
 
-export function OopsiesList() {
+export function OopsiesList({ currentUserId }: { currentUserId?: string }) {
   const {
     data: oopsies,
     isError,
@@ -71,7 +71,11 @@ export function OopsiesList() {
       {oopsies.pages.map((page, i) => (
         <div key={i} className="space-y-4">
           {page.oopsies.map((oopsie) => (
-            <OopsieCard key={oopsie.id} oopsie={oopsie} />
+            <OopsieCard
+              currentUserId={currentUserId}
+              key={oopsie.id}
+              oopsie={oopsie}
+            />
           ))}
         </div>
       ))}
@@ -88,8 +92,10 @@ export function OopsiesList() {
 
 function OopsieCard({
   oopsie,
+  currentUserId,
 }: {
   oopsie: RouterOutputs["oopsie"]["getLatest"]["oopsies"][0];
+  currentUserId?: string;
 }) {
   const utils = api.useUtils();
   const likeOopsie = api.oopsie.like.useMutation({
@@ -142,8 +148,12 @@ function OopsieCard({
               </a>
             </Button>
           )}
-          <DeleteButton oopsieId={oopsie.id} />
-          <UpdateOopsieButton oopsie={oopsie} />
+          {currentUserId === oopsie.authorId && (
+            <>
+              <DeleteButton oopsieId={oopsie.id} />
+              <UpdateOopsieButton oopsie={oopsie} />
+            </>
+          )}
         </div>
       </div>
     </div>
