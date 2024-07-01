@@ -120,7 +120,7 @@ function UsersList() {
     <>
       {data.map((user) => (
         <SelectItem key={user.id} value={user.id}>
-          {user.username}
+          {user.username} ({user.firstName})
         </SelectItem>
       ))}
     </>

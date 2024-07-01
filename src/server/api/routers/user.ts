@@ -8,6 +8,7 @@ export const userRouter = createTRPCRouter({
       .select({
         id: users.id,
         username: users.username,
+        firstName: users.firstName,
       })
       .from(users);
   }),
