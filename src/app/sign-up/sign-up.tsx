@@ -84,7 +84,7 @@ export default function SignUp() {
           </div>
         </div>
         <Button className="mb-2 w-full" type="submit">
-          Sign In
+          Sign Up
         </Button>
         <div className="text-center">
           <Link className="underline underline-offset-4" href="/sign-in">
