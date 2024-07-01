@@ -6,7 +6,7 @@ export default async function LeaderboardPage() {
     <main className="mx-auto max-w-screen-sm px-8">
       <ol>
         {users.map((user) => (
-          <li className="list-decimal">
+          <li key={user.id} className="list-decimal">
             <span className="font-bold">{user.username}</span>:{" "}
             {user.oopsiesCount} {user.oopsiesCount > 1 ? "oopsies" : "oopsie"}
           </li>
