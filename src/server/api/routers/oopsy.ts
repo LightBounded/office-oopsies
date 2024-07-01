@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { oopsieSchema } from "~/lib/validators";
+import { createOopsieSchema, updateOopsieSchema } from "~/lib/validators";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -11,7 +11,7 @@ import { oopsieLikes, oopsies, users } from "~/server/db/schema";
 
 export const oopsieRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(oopsieSchema)
+    .input(createOopsieSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx.insert(oopsies).values({
@@ -29,6 +29,40 @@ export const oopsieRouter = createTRPCRouter({
             oopsiesCount: sql`${users.oopsiesCount} + 1`,
           })
           .where(eq(users.id, input.userId));
+      });
+    }),
+  update: protectedProcedure
+    .input(updateOopsieSchema)
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        const oopsie = await tx.query.oopsies.findFirst({
+          where: eq(oopsies.id, input.oopsieId),
+        });
+
+        if (!oopsie) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Oopsie not found",
+          });
+        }
+
+        if (oopsie.authorId !== ctx.user.id) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You are not the author of this oopsie",
+          });
+        }
+
+        await tx
+          .update(oopsies)
+          .set({
+            description: input.description,
+            userId: input.userId,
+            latitude: input.latitude,
+            longitude: input.longitude,
+            imageUrl: input.imageUrl,
+          })
+          .where(eq(oopsies.id, input.oopsieId));
       });
     }),
   delete: protectedProcedure
