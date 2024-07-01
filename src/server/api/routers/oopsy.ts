@@ -14,7 +14,7 @@ export const oopsieRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx.insert(oopsies).values({
-          authorId: input.userId,
+          authorId: ctx.user.id,
           description: input.description,
           userId: input.userId,
           latitude: input.latitude,
