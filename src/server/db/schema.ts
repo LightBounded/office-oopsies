@@ -32,7 +32,7 @@ export const users = createTable(
     createdAt: text("created_at")
       .notNull()
       .default(sql`(current_timestamp)`),
-    oopsiesCount: int("number_of_oopsies").notNull().default(0),
+    oopsiesCount: int("oopsies_count").default(0).notNull(),
   },
   (table) => ({
     username: index("username_idx").on(table.username),
@@ -47,7 +47,9 @@ export const sessions = createTable("session", {
   id: text("id").notNull().primaryKey(),
   userId: text("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, {
+      onDelete: "cascade",
+    }),
   expiresAt: int("expires_at").notNull(),
 });
 
@@ -57,10 +59,16 @@ export const oopsies = createTable("oopsie", {
   }),
   userId: text("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   authorId: text("author_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   timestamp: text("timestamp")
     .notNull()
     .default(sql`(current_timestamp)`),
@@ -92,10 +100,16 @@ export const oopsieLikes = createTable(
     }),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     oopsieId: int("oopsie_id")
       .notNull()
-      .references(() => oopsies.id),
+      .references(() => oopsies.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     createdAt: text("timestamp")
       .notNull()
       .default(sql`(current_timestamp)`),
@@ -111,10 +125,16 @@ export const comments = createTable("comment", {
   }),
   userId: text("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   oopsieId: int("oopsie_id")
     .notNull()
-    .references(() => oopsies.id),
+    .references(() => oopsies.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   text: text("text").notNull(),
   timestamp: text("timestamp")
     .notNull()
