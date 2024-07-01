@@ -88,7 +88,9 @@ function OopsieCard({
   return (
     <div className="relative flex min-h-36 flex-col rounded-md border p-6 sm:flex-row sm:gap-6">
       <div className="mb-1 flex flex-col">
-        <div className="text-xl font-bold">{oopsie.user.username}</div>
+        <div className="text-xl font-bold">
+          {oopsie.user.username} ({oopsie.user.firstName})
+        </div>
         <div className="break-all">{oopsie.description}</div>
       </div>
       <div className="sm:ml-auto sm:flex sm:flex-col">
