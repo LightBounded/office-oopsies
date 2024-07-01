@@ -9,7 +9,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { type OopsieForm, oopsieFormSchema } from "~/lib/validators";
+import { type CreateOopsie, createOopsieSchema } from "~/lib/validators";
 import {
   Select,
   SelectContent,
@@ -23,8 +23,8 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 
 export function CreateOopsieForm() {
-  const form = useForm<OopsieForm>({
-    resolver: zodResolver(oopsieFormSchema),
+  const form = useForm<CreateOopsie>({
+    resolver: zodResolver(createOopsieSchema),
     defaultValues: {
       description: "",
       userId: "",
@@ -62,10 +62,7 @@ export function CreateOopsieForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (values) => {
-          createOopsie.mutate({
-            ...values,
-            imageUrl: "https://picsum.photos/1920/1080",
-          });
+          createOopsie.mutate(values);
         })}
       >
         <div className="mb-4 space-y-2">
