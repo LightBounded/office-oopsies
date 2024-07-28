@@ -43,6 +43,9 @@ async function Navbar() {
         <li>
           <Link href="/profile">Profile</Link>
         </li>
+        <li>
+          <Link href="/chat">Chat</Link>
+        </li>
       </ul>
       <div className="my-auto">
         {session ? (
